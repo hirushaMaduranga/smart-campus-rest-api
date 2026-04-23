@@ -1,0 +1,219 @@
+{
+  "info": {
+    "_postman_id": "7f2f08f2-f349-4ae0-8bfe-2e59d9a4b8f3",
+    "name": "Smart Campus REST API",
+    "description": "Postman collection for Smart Campus REST API. Use Create Room first, then Create Sensor, then Add Sensor Reading.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Discovery",
+      "item": [
+        {
+          "name": "Get API Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Rooms",
+      "item": [
+        {
+          "name": "Get All Rooms",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/rooms"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Room",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "let data = {};",
+                  "try {",
+                  "    data = pm.response.json();",
+                  "} catch (e) {}",
+                  "",
+                  "if (data.room && data.room.id) {",
+                  "    pm.collectionVariables.set('roomId', data.room.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"SCI-101\",\n  \"name\": \"Science Seminar Room\",\n  \"capacity\": 18\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/rooms"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Room By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/rooms/{{roomId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Room By ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/rooms/{{roomId}}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sensors",
+      "item": [
+        {
+          "name": "Get All Sensors",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/sensors"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Sensors By Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/sensors?type={{sensorType}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Sensor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "let data = {};",
+                  "try {",
+                  "    data = pm.response.json();",
+                  "} catch (e) {}",
+                  "",
+                  "if (data.sensor && data.sensor.id) {",
+                  "    pm.collectionVariables.set('sensorId', data.sensor.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"TEMP-010\",\n  \"type\": \"TEMP\",\n  \"status\": \"ACTIVE\",\n  \"currentValue\": 20.1,\n  \"roomId\": \"{{roomId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/sensors"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Sensor Readings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/sensors/{{sensorId}}/readings"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Sensor Reading",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": 21.3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/sensors/{{sensorId}}/readings"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1"
+    },
+    {
+      "key": "roomId",
+      "value": "SCI-101"
+    },
+    {
+      "key": "sensorId",
+      "value": "TEMP-010"
+    },
+    {
+      "key": "sensorType",
+      "value": "TEMP"
+    }
+  ]
+}
